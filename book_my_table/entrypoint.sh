@@ -1,4 +1,6 @@
 #!/bin/sh
+mkdir -p /app/logs
+
 echo "Ожидание PostgreSQL..."
 while ! nc -z "$DB_HOST" 5432; do sleep 1; done
 echo "PostgreSQL запущен."

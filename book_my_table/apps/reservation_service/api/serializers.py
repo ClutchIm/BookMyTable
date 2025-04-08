@@ -2,6 +2,7 @@ from rest_framework import serializers
 from datetime import timedelta
 
 from apps.reservation_service.models import Reservation
+from apps.reservation_service.service import logger
 
 
 class ReservationSerializer(serializers.ModelSerializer):
@@ -11,6 +12,8 @@ class ReservationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, data):
+        logger.info(f'Start validating reservation object: {data}')
+
         table = data['table_id']
         start_time = data['reservation_time']
         duration = data.get('duration_minutes')
@@ -19,6 +22,8 @@ class ReservationSerializer(serializers.ModelSerializer):
             end_time = start_time + timedelta(minutes=duration)
         else:
             end_time = None  # infinite
+
+        logger.info(f'Got end time: {end_time}')
 
         existing_reservations = Reservation.objects.filter(table_id=table)
 
@@ -37,5 +42,7 @@ class ReservationSerializer(serializers.ModelSerializer):
             else:
                 if start_time < res_end and res_start < end_time:
                     raise serializers.ValidationError({"error": ["This table is already booked for this time."]})
+
+        logger.info(f'Validating reservation object successful')
 
         return data
