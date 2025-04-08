@@ -8,6 +8,9 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    volumes:
+      - ./apps/reservation_service/migrations:/app/apps/reservation_service/migrations
+      - ./apps/table_service/migrations:/app/apps/table_service/migrations
     networks:
       - backend
 
